@@ -48,7 +48,7 @@ def collection(current_user):
 			# Sorting them and retrieving the first three values
 			fav_genres = sorted(genre_list, key=lambda x:genre_list.count(x), reverse=True)
 			seen = set()
-			fav_genres = [genre for genre in fav_genres if not (genre in seen or seen.add(genre))][:3]
+			fav_genres = [genre for genre in fav_genres if not (genre in seen or seen.add(genre)) and genre][:3]
 
 			return {
 			"is_success": True,

@@ -43,7 +43,7 @@ def request_count(current_user):
 		"requests" : current_app.wsgi_app.get_count()
 	}, 200
 
-@auth.route('/request-count/reset')
+@auth.route('/request-count/reset', methods=['POST'])
 def request_count_reset():
 	current_app.wsgi_app.reset_count()
 	return {
