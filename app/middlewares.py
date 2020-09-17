@@ -2,7 +2,7 @@ from werkzeug.wrappers import Request, Response, ResponseStream
 
 class CounterMiddleware():
     '''
-    Simple WSGI middleware
+    WSGI middleware to keep track of the number of requests processed by the Flask app
     '''
     def __init__(self, app):
         self.app = app

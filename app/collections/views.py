@@ -1,13 +1,13 @@
 from flask import Blueprint, current_app, request
 from app.models import Users, Collections, Movies
 from app import db
+from app.general_utils import token_required
 
 coll = Blueprint('coll',__name__)
 
 @coll.route('/collection', methods=['GET', 'POST'])
-def collection():
-	current_user = Users.query.first()
-
+@token_required
+def collection(current_user):
 	if request.method == 'POST':
 		try:
 			data = request.json
@@ -32,34 +32,39 @@ def collection():
 	
 	elif request.method == 'GET':
 		user_collections =  Collections.query.filter(Collections.user == current_user).all()
-		collections_info = []
-		genre_list = []
-		for coll in user_collections:
-			collections_info.append({
-				"title":coll.title, 
-				"uuid":coll.uuid, 
-				"description":coll.description
-				})
-			# Getting a list of all the genres in all the movies across each collection
-			genre_list.extend(coll.get_movies_genres())
+		if user_collections:
+			collections_info = []
+			genre_list = []
+			for coll in user_collections:
+				collections_info.append({
+					"title":coll.title, 
+					"uuid":coll.uuid, 
+					"description":coll.description
+					})
+				# Getting a list of all the genres in all the movies across each collection
+				genre_list.extend(coll.get_movies_genres())
 
-		# Getting the favorite genres by calculating the genres with the highest frequncy
-		# Sorting them and retrieving the first three values
-		fav_genres = sorted(genre_list, key=lambda x:genre_list.count(x), reverse=True)
-		seen = set()
-		fav_genres = [genre for genre in fav_genres if not (genre in seen or seen.add(genre))][:3]
+			# Getting the favorite genres by calculating the genres with the highest frequncy
+			# Sorting them and retrieving the first three values
+			fav_genres = sorted(genre_list, key=lambda x:genre_list.count(x), reverse=True)
+			seen = set()
+			fav_genres = [genre for genre in fav_genres if not (genre in seen or seen.add(genre))][:3]
 
-		return {
-		"is_success": True,
-		"favourite_genres" : fav_genres,
-		"data": {
-		"collections": collections_info
-		}
-		}, 200
+			return {
+			"is_success": True,
+			"favourite_genres" : fav_genres,
+			"data": {
+			"collections": collections_info
+			}
+			}, 200
+		else:
+			return {
+			"message" : "User has no collections"
+			}, 200
 
 @coll.route('/collection/<uuid>', methods=['GET','PUT','DELETE'])
-def single_collection(uuid):
-	current_user = Users.query.first()
+@token_required
+def single_collection(current_user,uuid):
 	collection = Collections.query.filter(Collections.uuid == uuid, Collections.user == current_user).first()
 	if not collection:
 		return {

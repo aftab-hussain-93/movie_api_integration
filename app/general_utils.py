@@ -1,3 +1,8 @@
+from flask import request, jsonify, current_app as app
+import jwt
+from app.models import Users
+from functools import wraps
+
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):

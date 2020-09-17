@@ -26,14 +26,14 @@ class Users(Base):
 		return user.generate_jwt_token()
 
 	def generate_jwt_token(self):
-		token = jwt.encode({'public_id' : self.public_id, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, app.config['SECRET_KEY']).decode('UTF-8')
+		token = jwt.encode({'public_id' : self.public_id, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=60)}, app.config['SECRET_KEY']).decode('UTF-8')
 		return token
 
 	def __str__(self):
-		return f"User - {self.username}"
+		return f"User - {self.name}"
 
 	def __repr__(self):
-		return f"<{self.id}> - <{self.username}>"
+		return f"<{self.id}> - <{self.name}>"
 
 collection_movies = db.Table('collection_movies',
     db.Column('coll_id', db.Integer, db.ForeignKey('collections.id'), primary_key=True),
