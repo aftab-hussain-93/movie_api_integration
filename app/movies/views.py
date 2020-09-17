@@ -14,7 +14,7 @@ def all_movies():
 		payload = {'page': page}
 		res = requests.get('https://demo.credy.in/api/v1/maya/movies/', params=payload,  auth=(user, pwd), timeout=5)
 	else:
-		res = requests.get('https://demo.credy.in/api/v1/maya/movies/', auth=(user, pwd))
+		res = requests.get('https://demo.credy.in/api/v1/maya/movies/', auth=(user, pwd), timeout=5)
 	try:
 		res.raise_for_status()
 		data = res.json()
@@ -32,12 +32,6 @@ def all_movies():
 	except Exception as e:
 		return {'error':f'Could not fetch the data {e}'}
 	else:
-		return result
+		return result, 200
 
-
-#  url = 'http://example.com/search/'
-# >>> params = {'lang':'en','tag':'python'}
-# >>> req = PreparedRequest()
-# >>> req.prepare_url(url, params)
-# >>> print(req.url)
 

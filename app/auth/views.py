@@ -21,7 +21,22 @@ def register():
 			current_app.logger.info(f"Creating new user {username}...")
 			access_token = Users.add_user(username=username, password=password)
 
-	except AttributeError as e:
+	except (KeyError,TypeError) as e:
 		return {"error" : f"Invalid input data. {e}"}
+	except AttributeError as e:
+		return {"error":"Invalid Login {}".format(e)}
 	else:
 		return {"x-access-token" : access_token}, 201
+
+@auth.route('/request-count')
+def request_count():
+	return {
+		"requests" : current_app.wsgi_app.get_count()
+	}, 200
+
+@auth.route('/request-count/reset')
+def request_count_reset():
+	current_app.wsgi_app.reset_count()
+	return {
+		"message" : "request count reset successfully"
+	}, 200

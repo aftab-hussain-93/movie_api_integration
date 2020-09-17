@@ -9,8 +9,8 @@ def collection():
 	current_user = Users.query.first()
 
 	if request.method == 'POST':
-		data = request.json
 		try:
+			data = request.json
 			title = data['title']
 			description = data['description']
 			movies = data['movies']
@@ -18,6 +18,8 @@ def collection():
 				raise ValueError("You have another collection with the same title")
 			current_app.logger.info(f"Creating new collection {title}...")
 			new_collection = Collections.create_collection(title=title, description=description, user_id=current_user.id)
+		except AttributeError:
+			return {"error" : f"No JSON data provided"}, 400
 		except (KeyError, TypeError) as e:
 			return {"error": f"Missing input data {e}. Please enter title, description and list of movies"}, 400
 		except ValueError as e:
