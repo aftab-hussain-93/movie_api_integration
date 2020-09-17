@@ -22,7 +22,7 @@ def register():
 			access_token = Users.add_user(username=username, password=password)
 
 	except (KeyError,TypeError) as e:
-		return {"error" : f"Invalid input data. {e}"}
+		return {"error" : f"Invalid input data. {e}. Please provide username and password"}
 	except AttributeError as e:
 		return {"error":"Invalid Login {}".format(e)}
 	else:
